@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Ход конем</title>
+    <link href="../../static/css/StyleCSS.css" th:href="@{/css/StyleCSS.css}" rel="stylesheet" type="text/css" media="all" />
+    <link rel='stylesheet' href='/webjars/bootstrap/3.1.0/css/bootstrap.min.css'>
+    <script type="text/javascript" src=https://code.jquery.com/jquery-3.6.0.min.js></script>
+	<script language="JavaScript">
+        function color1(row, col){					
+		  var table = document.getElementById('chessboard');
+		      //перезаписываем начальные цвета
+		  for(var i=0;i<table.children[0].childElementCount;i++) 
+		  {
+			var tableRow = table.children[0].children[i];
+			for(var j=0;j<tableRow.childElementCount;j++)
+			  {
+				var cell = tableRow.children[j];
+				if ((isOdd(i) && isOdd(j)) || (isEven(i) && isEven(j))) cell.style.background = "#f4cd8d";
+				else cell.style.background = "#745853";
+			  }
+		  }	
+			//Нажатая кнопка
+			row=row-1; col=col-1;
+		  var tableRow1 = table.children[0].children[row];
+		  var cell1 = tableRow1.children[col];			
+			cell1.style.background = "#ff0000"; 
+			//возможные ходы
+			var mas1 = [1,-1];
+			var mas2 = [2,-2];
+			var arr = [];
+			var ch1=0;
+		  for(var i1=0;i1<2;i1++) 
+		  {
+			for(var j1=0;j1<2;j1++)
+			  {
+				if (row+mas1[i1]<8 && row+mas1[i1]>=0 && col+mas2[j1]<8 && col+mas2[j1]>=0) {					
+                  arr[ch1]= row + mas1[i1];				  
+				  arr[ch1+1]= col + mas2[j1];	
+				  ch1=ch1+2;
+				}
+				if (row+mas2[i1]<8 && row+mas2[i1]>-1 && col+mas1[j1]<8 && col+mas1[j1]>-1) {
+                  arr[ch1]= row + mas2[i1];
+				  arr[ch1+1]= col + mas1[j1];
+                  ch1=ch1+2;
+				}				
+			}
+		  }
+		  for(var i2=0;i2<arr.length;i2=i2+2) 
+		  {
+			var tableRow2 = table.children[0].children[arr[i2]];
+		    var cell2 = tableRow2.children[arr[i2+1]];			
+			cell2.style.background = "#0000ff"; 
+		  }	  
+		}    
+		
+		function isEven(n) {
+		   return n % 2 == 0;
+		}
+		
+		function isOdd(n) {
+		   return Math.abs(n % 2) == 1;
+		}  
+    </script>    	
+
+</head>
+<body>	
+<table id="chessboard" border="1" cellspacing="0" cellpadding="0">
+<tr height="30"
+    th:each="row, rStat : ${#numbers.sequence(1, 8)}">
+    <td th:id="${id}" width="30"  th:each="col, cStat : ${#numbers.sequence(1, 8)}"            
+        th:data-row=${rStat.count} 
+        th:data-col=${cStat.count}             
+        th:style="${(rStat.odd and cStat.odd) or (rStat.even and cStat.even)} ? 'background: #f4cd8d' : 'background: #745853'"
+        th:onclick="'javascript:color1(\'' + ${rStat.count} + '\', \'' + ${cStat.count} + '\')'"
+        > 
+    </td>
+</tr>
+</table>
+
+</body>
+</html>
